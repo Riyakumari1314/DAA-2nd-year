@@ -1,0 +1,58 @@
+ Objective: Implement the Activity Selection Problem using the Greedy Algorithm and 
+understand how local optimal choices lead to a globally optimal solution. 
+Problem Statement: You are given n activities with their start times and finish times. Write 
+a program to select the maximum number of activities that can be performed by a single 
+person, assuming that a person can only work on one activity at a time. 
+Input: n → number of activities 
+s[i] → start time of the i-th activity 
+f[i] → finish time of the i-th activity 
+Output: Print the indices of the selected activities or their start and finish times
+
+#include <stdio.h>
+
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void activitySelection(int start[], int finish[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (finish[j] > finish[j + 1]) {
+                swap(&finish[j], &finish[j + 1]);
+                swap(&start[j], &start[j + 1]);
+            }
+        }
+    }
+
+    printf("Selected activities:\n");
+    int last = 0;
+    printf("(%d, %d)\n", start[last], finish[last]);
+
+    for (int i = 1; i < n; i++) {
+        if (start[i] >= finish[last]) {
+            printf("(%d, %d)\n", start[i], finish[i]);
+            last = i;
+        }
+    }
+}
+
+int main() {
+    int n;
+    printf("Enter number of activities: ");
+    scanf("%d", &n);
+
+    int start[n], finish[n];
+    printf("Enter start times of activities:\n");
+    for (int i = 0; i < n; i++)
+        scanf("%d", &start[i]);
+
+    printf("Enter finish times of activities:\n");
+    for (int i = 0; i < n; i++)
+        scanf("%d", &finish[i]);
+
+    activitySelection(start, finish, n);
+
+    return 0;
+}
