@@ -1,1 +1,51 @@
+Design and implement an efficient algorithm to compute the power of a number an, where 
+a is the base and n is a non-negative integer exponent. Compare the naïve method and the 
+fast exponentiation method.
 
+#include <stdio.h>
+#include <time.h>
+
+long long pow_naive(long long base, int exp) {
+    long long result = 1;
+    for (int i = 0; i < exp; i++) {
+        result *= base;
+    }
+    return result;
+}
+
+long long pow_fast(long long base, int exp) {
+    if (exp == 0)
+        return 1;
+    if (exp % 2 == 0) {
+        long long half_power = pow_fast(base, exp / 2);
+        return half_power * half_power;
+    } else {
+        return base * pow_fast(base, exp - 1);
+    }
+}
+
+int main() {
+    long long base;
+    int exponent;
+    clock_t t_start, t_end;
+    double elapsed_time;
+
+    printf("Enter base: ");
+    scanf("%lld", &base);
+    printf("Enter exponent: ");
+    scanf("%d", &exponent);
+    t_start = clock();
+    long long naive_result = pow_naive(base, exponent);
+    t_end = clock();
+    elapsed_time = ((double)(t_end - t_start)) / CLOCKS_PER_SEC;
+    printf("Naive Method: %lld^%d = %lld\n", base, exponent, naive_result);
+    printf("Time (Naive): %f seconds\n\n", elapsed_time);
+    t_start = clock();
+    long long fast_result = pow_fast(base, exponent);
+    t_end = clock();
+    elapsed_time = ((double)(t_end - t_start)) / CLOCKS_PER_SEC;
+    printf("Fast Exponentiation: %lld^%d = %lld\n", base, exponent, fast_result);
+    printf("Time (Fast): %f seconds\n", elapsed_time);
+
+    return 0;
+}
