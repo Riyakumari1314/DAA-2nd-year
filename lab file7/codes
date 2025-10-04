@@ -34,6 +34,7 @@ int main() {
     scanf("%lld", &base);
     printf("Enter exponent: ");
     scanf("%d", &exponent);
+
     t_start = clock();
     long long naive_result = pow_naive(base, exponent);
     t_end = clock();
@@ -49,3 +50,4 @@ int main() {
 
     return 0;
 }
+
