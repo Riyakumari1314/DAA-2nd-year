@@ -1,1 +1,92 @@
+#include <stdio.h> 
+#include <time.h> 
+ 
+int findMax(int x, int y) { 
+    return (x > y) ? x : y; 
+} 
+ 
+void fractionalKnapsack(int itemCount, float wt[], float val[], float capacity) { 
+    float valPerWt[30], temp; 
+    float profit = 0, usedWt = 0; 
+    int i, j; 
+ 
+    for (i = 0; i < itemCount; i++) 
+        valPerWt[i] = val[i] / wt[i]; 
+    for (i = 0; i < itemCount - 1; i++) { 
+        for (j = i + 1; j < itemCount; j++) { 
+            if (valPerWt[i] < valPerWt[j]) { 
+                temp = valPerWt[i]; valPerWt[i] = valPerWt[j]; valPerWt[j] = temp; 
+                temp = val[i]; val[i] = val[j]; val[j] = temp; 
+                temp = wt[i]; wt[i] = wt[j]; wt[j] = temp; 
+            } 
+        } 
+    } 
+ 
+    for (i = 0; i < itemCount; i++) { 
+        if (usedWt + wt[i] <= capacity) { 
+            usedWt += wt[i]; 
+            profit += val[i]; 
+        } else { 
+            float remaining = capacity - usedWt; 
+            profit += val[i] * (remaining / wt[i]); 
+            break; 
+        } 
+    } 
+ 
+    printf("Maximum Value (Greedy) = %.2f\n", profit); 
+} 
+ 
+int zeroOneKnapsack(int n, int wt[], int val[], int cap) { 
+    int dp[n + 1][cap + 1]; 
+    int i, w; 
+ 
+    for (i = 0; i <= n; i++) { 
+        for (w = 0; w <= cap; w++) { 
+            if (i == 0 || w == 0) 
+                dp[i][w] = 0; 
+            else if (wt[i - 1] <= w) 
+                dp[i][w] = findMax(val[i - 1] + dp[i - 1][w - wt[i - 1]], dp[i - 1][w]); 
+            else 
+                dp[i][w] = dp[i - 1][w]; 
+        } 
+    } 
+ 
+    return dp[n][cap]; 
+} 
+ 
+int main() { 
+    int n, i, cap; 
+    float wt[30], val[30]; 
+    int wtInt[30], valInt[30]; 
+    clock_t startTime, endTime; 
+    double duration; 
+ 
+    printf("Enter number of items: "); 
+    scanf("%d", &n); 
+ 
+    printf("Enter value and weight for each item:\n"); 
+    for (i = 0; i < n; i++) { 
+        printf("Item %d (Value Weight): ", i + 1); 
+        scanf("%f %f", &val[i], &wt[i]); 
+        valInt[i] = (int)val[i]; 
+        wtInt[i] = (int)wt[i]; 
+    } 
+ 
+    printf("Enter knapsack capacity: "); 
+    scanf("%d", &cap); 
+    startTime = clock(); 
+    fractionalKnapsack(n, wt, val, cap); 
+    endTime = clock(); 
+    duration = ((double)(endTime - startTime)) / CLOCKS_PER_SEC; 
+    printf("Time Taken (Greedy): %.6f seconds\n", duration); 
+    startTime = clock(); 
+    int maxProfit = zeroOneKnapsack(n, wtInt, valInt, cap); 
+    endTime = clock(); 
+    duration = ((double)(endTime - startTime)) / CLOCKS_PER_SEC; 
+ 
+    printf("Maximum Value (DP) = %d\n", maxProfit); 
+    printf("Time Taken (DP): %.6f seconds\n", duration); 
+ 
+    return 0; 
+}
 
