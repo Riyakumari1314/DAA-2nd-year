@@ -1,1 +1,57 @@
+ 
+#include <stdio.h> 
+ 
+struct Item { 
+    int value; 
+    int wt; 
+    float density; 
+}; 
+void arrangeByDensity(struct Item arr[], int size) { 
+    struct Item temp; 
+    for (int i = 0; i < size - 1; i++) { 
+        for (int j = i + 1; j < size; j++) { 
+            if (arr[i].density < arr[j].density) { 
+                temp = arr[i]; 
+                arr[i] = arr[j]; 
+                arr[j] = temp; 
+            } 
+        } 
+    } 
+} 
+ 
+int main() { 
+    int n; 
+    float capacity, profit = 0.0; 
+ 
+ 
+    printf("Enter number of items: "); 
+    scanf("%d", &n); 
+ 
+    struct Item arr[n]; 
+    for (int i = 0; i < n; i++) { 
+        printf("\nEnter value of item %d: ", i + 1); 
+        scanf("%d", &arr[i].value); 
+        printf("Enter weight of item %d: ", i + 1); 
+        scanf("%d", &arr[i].wt); 
+        arr[i].density = (float)arr[i].value / arr[i].wt; 
+    } 
+ 
+    printf("\nEnter capacity of knapsack: "); 
+    scanf("%f", &capacity); 
+ 
+    arrangeByDensity(arr, n); 
+    for (int i = 0; i < n && capacity > 0; i++) { 
+        if (arr[i].wt <= capacity) { 
+            profit += arr[i].value; 
+            capacity -= arr[i].wt; 
+        } else { 
+            profit += arr[i].density * capacity; 
+            capacity = 0; // bag is full 
+        } 
+    } 
+ 
+    printf("\nMaximum profit that can be earned: %.2f\n", profit); 
+ 
+    return 0; 
+}
 
